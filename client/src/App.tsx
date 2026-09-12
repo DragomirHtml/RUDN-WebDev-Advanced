@@ -1,40 +1,26 @@
-import type { Card } from "./types/card";
+
 import { BoardHeader } from "./components/BoardHeader/BoardHeader";
 import { BoardColumn } from "./components/BoardColumn/BoardColumn";
 import { NewCardForm } from "./components/NewCardForm/NewCardForm";
 import styles from "./App.module.css";
-
-const cards: Card[] = [{ 
-  id: '1',
-  title: "Первая карточка",
-  isDone: false,
-  },
-  { 
-  id: '1',
-  title: "Вторая карточка",
-  isDone: false,
-  },
-  { 
-  id: '1',
-  title: "Третья карточка",
-  isDone: false,
-  },
-  { 
-  id: '1',
-  title: "Четвертая карточка",
-  isDone: true,
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { fetchCards } from "./api/cards";
 
 function App() {
+  const query = useQuery({ queryKey: ["cards"], queryFn: fetchCards })
+
+
   return (
     <div className={styles.app}>
       <BoardHeader />
       <main className={styles.board}>
         <NewCardForm />
+        {query.isLoading ? "Загружаемся": 
+        
         <div className={styles.columns}>
-          <BoardColumn cards={cards} />
+          <BoardColumn cards={query.data ?? []} />
         </div>
+        }
       </main>
     </div>
   );
