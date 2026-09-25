@@ -6,8 +6,9 @@ type BoardCardProps = {
 };
 
 export function BoardCard({ title, isDone }: BoardCardProps) {
-  return <div className={isDone ? 
-    styles.isDone:
-    styles.card
-  }>{title}</div>;
+  return (
+    <div className={isDone ? styles.isDone : styles.card}>
+      {title}
+    </div>
+  );
 }
