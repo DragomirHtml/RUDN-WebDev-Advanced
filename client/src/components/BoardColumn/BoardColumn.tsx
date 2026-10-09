@@ -5,6 +5,7 @@ import styles from "./BoardColumn.module.css";
 
 type Props = {
   cards: Card[];
+  onDelete?: (id: string, title: string) => void;
 };
 
 export function BoardColumn(props: Props) {
@@ -22,8 +23,10 @@ export function BoardColumn(props: Props) {
         {visibleCards.map((card) => (
           <BoardCard
             key={card.id}
+            id={card.id}
             title={card.title}
             isDone={card.isDone}
+            onDelete={props.onDelete}
           />
         ))}
       </div>
