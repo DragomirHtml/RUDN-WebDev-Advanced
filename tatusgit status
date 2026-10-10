@@ -1,0 +1,165 @@
+[1mdiff --git a/client/src/components/BoardCard/BoardCard.module.css b/client/src/components/BoardCard/BoardCard.module.css[m
+[1mindex c35ba29..9626277 100644[m
+[1m--- a/client/src/components/BoardCard/BoardCard.module.css[m
+[1m+++ b/client/src/components/BoardCard/BoardCard.module.css[m
+[36m@@ -12,7 +12,6 @@[m
+   border-radius: 8px;[m
+   padding: 12px 14px;[m
+   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);[m
+[31m-[m
+   opacity: 0.5;[m
+   text-decoration: line-through;[m
+[31m-}[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/client/src/components/BoardCard/BoardCard.tsx b/client/src/components/BoardCard/BoardCard.tsx[m
+[1mindex 96a603b..85bfe4d 100644[m
+[1m--- a/client/src/components/BoardCard/BoardCard.tsx[m
+[1m+++ b/client/src/components/BoardCard/BoardCard.tsx[m
+[36m@@ -6,8 +6,9 @@[m [mtype BoardCardProps = {[m
+ };[m
+ [m
+ export function BoardCard({ title, isDone }: BoardCardProps) {[m
+[31m-  return <div className={isDone ? [m
+[31m-    styles.isDone:[m
+[31m-    styles.card[m
+[31m-  }>{title}</div>;[m
+[31m-}[m
+[32m+[m[32m  return ([m
+[32m+[m[32m    <div className={isDone ? styles.isDone : styles.card}>[m
+[32m+[m[32m      {title}[m
+[32m+[m[32m    </div>[m
+[32m+[m[32m  );[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/client/src/components/BoardColumn/BoardColumn.tsx b/client/src/components/BoardColumn/BoardColumn.tsx[m
+[1mindex 748a525..8cb86a1 100644[m
+[1m--- a/client/src/components/BoardColumn/BoardColumn.tsx[m
+[1m+++ b/client/src/components/BoardColumn/BoardColumn.tsx[m
+[36m@@ -1,18 +1,32 @@[m
+ import type { Card } from "../../types/card";[m
+[32m+[m[32mimport { useBoardFiltersStore } from "../../store/boardFilters";[m
+ import { BoardCard } from "../BoardCard/BoardCard";[m
+ import styles from "./BoardColumn.module.css";[m
+ [m
+ type Props = {[m
+   cards: Card[];[m
+[31m-}[m
+[32m+[m[32m};[m
+ [m
+ export function BoardColumn(props: Props) {[m
+[32m+[m[32m  const hideDone = useBoardFiltersStore((state) => state.hideDone);[m
+[32m+[m
+[32m+[m[32m  const visibleCards = hideDone[m
+[32m+[m[32m    ? props.cards.filter((card) => !card.isDone)[m
+[32m+[m[32m    : props.cards;[m
+[32m+[m
+   return ([m
+     <section className={styles.column}>[m
+       <h2 className={styles.title}>К выполнению</h2>[m
+[32m+[m
+       <div className={styles.cards}>[m
+[31m-        {props.cards.map(card => <BoardCard title={card.title} isDone = {card.isDone}/>)}[m
+[32m+[m[32m        {visibleCards.map((card) => ([m
+[32m+[m[32m          <BoardCard[m
+[32m+[m[32m            key={card.id}[m
+[32m+[m[32m            title={card.title}[m
+[32m+[m[32m            isDone={card.isDone}[m
+[32m+[m[32m          />[m
+[32m+[m[32m        ))}[m
+       </div>[m
+     </section>[m
+   );[m
+[31m-}[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/client/src/components/BoardHeader/BoardHeader.tsx b/client/src/components/BoardHeader/BoardHeader.tsx[m
+[1mindex de82623..36a6d2d 100644[m
+[1m--- a/client/src/components/BoardHeader/BoardHeader.tsx[m
+[1m+++ b/client/src/components/BoardHeader/BoardHeader.tsx[m
+[36m@@ -1,12 +1,21 @@[m
+[32m+[m[32mimport { useBoardFiltersStore } from "../../store/boardFilters";[m
+ import styles from "./BoardHeader.module.css";[m
+ [m
+ export function BoardHeader() {[m
+[32m+[m[32m  const hideDone = useBoardFiltersStore((state) => state.hideDone);[m
+[32m+[m[32m  const toggleHideDone = useBoardFiltersStore([m
+[32m+[m[32m    (state) => state.toggleHideDone[m
+[32m+[m[32m  );[m
+[32m+[m
+   return ([m
+     <header className={styles.header}>[m
+       <h1 className={styles.title}>Канбан-доска</h1>[m
+[32m+[m
+       <div className={styles.controls}>[m
+[31m-        {/* Место для будущих элементов управления: фильтры, профиль пользователя */}[m
+[32m+[m[32m        <button type="button" onClick={toggleHideDone}>[m
+[32m+[m[32m          {hideDone ? "Показать все" : "Скрыть выполненные"}[m
+[32m+[m[32m        </button>[m
+       </div>[m
+     </header>[m
+   );[m
+[31m-}[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/client/src/components/NewCardForm/NewCardForm.tsx b/client/src/components/NewCardForm/NewCardForm.tsx[m
+[1mindex a35ef59..bc2cde8 100644[m
+[1m--- a/client/src/components/NewCardForm/NewCardForm.tsx[m
+[1m+++ b/client/src/components/NewCardForm/NewCardForm.tsx[m
+[36m@@ -1,24 +1,45 @@[m
+ import { useState } from "react";[m
+ import styles from "./NewCardForm.module.css";[m
+ import { createCard } from "../../api/cards";[m
+[31m-import { useMutation } from "@tanstack/react-query";[m
+[32m+[m[32mimport { useMutation, useQueryClient } from "@tanstack/react-query";[m
+ [m
+ export function NewCardForm() {[m
+[31m-const [inputText, setInputText] = useState("");[m
+[32m+[m[32m  const [inputText, setInputText] = useState("");[m
+[32m+[m[32m  const queryClient = useQueryClient();[m
+ [m
+[31m-const mutation = useMutation({mutationFn: createCard})[m
+[32m+[m[32m  const mutation = useMutation({[m
+[32m+[m[32m    mutationFn: createCard,[m
+[32m+[m[32m    onSuccess: () => {[m
+[32m+[m[32m      queryClient.invalidateQueries({ queryKey: ["cards"] });[m
+[32m+[m[32m      setInputText("");[m
+[32m+[m[32m    },[m
+[32m+[m[32m  });[m
+[32m+[m
+[32m+[m[32m  const handleAddCard = () => {[m
+[32m+[m[32m    const title = inputText.trim();[m
+[32m+[m
+[32m+[m[32m    if (!title) {[m
+[32m+[m[32m      return;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    mutation.mutate(title);[m
+[32m+[m[32m  };[m
+ [m
+   return ([m
+     <div className={styles.form}>[m
+[31m-      <input [m
+[31m-      className={styles.input} [m
+[31m-      placeholder="Название карточки" [m
+[31m-      value={inputText}[m
+[31m-      onChange={(event) => setInputText(event.target.value)}[m
+[32m+[m[32m      <input[m
+[32m+[m[32m        className={styles.input}[m
+[32m+[m[32m        placeholder="Название карточки"[m
+[32m+[m[32m        value={inputText}[m
+[32m+[m[32m        onChange={(event) => setInputText(event.target.value)}[m
+       />[m
+[31m-      <button className={styles.button} type="button">[m
+[32m+[m[32m      <button[m
+[32m+[m[32m        className={styles.button}[m
+[32m+[m[32m        type="button"[m
+[32m+[m[32m        onClick={handleAddCard}[m
+[32m+[m[32m      >[m
+         Добавить[m
+       </button>[m
+     </div>[m
+   );[m
+[31m-}[m
+[32m+[m[32m}[m
+\ No newline at end of file[m

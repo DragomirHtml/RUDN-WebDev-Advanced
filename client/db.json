@@ -17,6 +17,12 @@
       "title": "Добавить фильтр выполненных карточек",
       "isDone": false,
       "isUrgent": false
+    },
+    {
+      "title": "УРААААААА!!!",
+      "isDone": false,
+      "isUrgent": false,
+      "id": "3x-V8DS_SN4"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

@@ -4,6 +4,9 @@
   border-radius: 8px;
   padding: 12px 14px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .isDone {
@@ -12,7 +15,35 @@
   border-radius: 8px;
   padding: 12px 14px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-
   opacity: 0.5;
   text-decoration: line-through;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cardText {
+  flex: 1;
+}
+
+.deleteBtn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s;
+}
+
+.card:hover .deleteBtn,
+.isDone:hover .deleteBtn {
+  opacity: 1;
+}
+
+.deleteBtn:hover {
+  background: var(--danger);
+  color: white;
 }
