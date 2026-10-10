@@ -18,7 +18,6 @@ export function BoardColumn(props: Props) {
   return (
     <section className={styles.column}>
       <h2 className={styles.title}>К выполнению</h2>
-
       <div className={styles.cards}>
         {visibleCards.map((card) => (
           <BoardCard
