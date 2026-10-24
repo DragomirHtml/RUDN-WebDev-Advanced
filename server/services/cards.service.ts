@@ -31,6 +31,7 @@ let cards: Card[] = [
   }
 
   export function createCard(title: string) {
+
       const newCard: Card = {
           id: crypto.randomUUID(),
           title: title,
