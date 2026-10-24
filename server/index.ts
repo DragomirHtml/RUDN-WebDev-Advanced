@@ -1,38 +1,38 @@
-import express from "express";
 
+import express from "express";
+import { createCard, getAllCards, deleteCard } from "./services/cards.service";
 const app = express();
 
-const cards = [
-    {
-      "id": "1",
-      "title": "Спроектировать структуру доски",
-      "isDone": true,
-      "isUrgent": false
-    },
-    {
-      "id": "2",
-      "title": "Подключить доску к серверу",
-      "isDone": false,
-      "isUrgent": true
-    },
-    {
-      "id": "3",
-      "title": "Добавить фильтр выполненных карточек",
-      "isDone": false,
-      "isUrgent": false
-    },
-    {
-      "title": "УРААААААА!!!",
-      "isDone": false,
-      "isUrgent": false,
-      "id": "3x-V8DS_SN4"
-    }
-  ]
+app.use(express.json());
 
 app.get("/cards", (req, res) => {
-    res.json(cards);
-})
+    const ourCards = getAllCards();
 
-app.listen(3001, () => {
-    console.log("Сервер запущен")
+    res.json(ourCards);
 });
+
+app.post("/cards", (req, res) => {
+  const title = req.body.title;
+  const newCard = createCard(title);
+
+  res.status(201).json(newCard);
+});
+
+app.delete("/cards", (req, res) => {
+  const id = req.query.id;
+
+  if (typeof id !== "string") {
+    res.sendStatus(400);
+    return;
+  }
+
+  const isDeleted = deleteCard(id);
+
+  if (!isDeleted) {
+    res.sendStatus(404);
+  } else {
+    res.sendStatus(204);
+  }
+});
+
+app.listen(3001);
