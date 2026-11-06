@@ -53,3 +53,15 @@ let cards: Card[] = [
 
     return newCards.length !== cards.length;
   }
+
+  export function toggleCardDone(id: string, isDone: boolean) {
+    const card = cards.find(c => c.id === id);
+
+    if (!card) {
+      return null;
+    }
+
+    card.isDone = isDone;
+
+    return card;
+  }
