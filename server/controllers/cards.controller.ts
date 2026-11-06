@@ -1,4 +1,4 @@
-import { createCard, deleteCard, getAllCards } from "../services/cards.service.ts";
+import { createCard, deleteCard, getAllCards, toggleCardDone } from "../services/cards.service.ts";
  import type{Request, Response } from 'express';
 
  export function get(req: Request, res: Response) {
@@ -31,4 +31,18 @@ export function remove(req: Request, res: Response) {
     } else {
         res.sendStatus(204);
     }
+}
+
+export function toggleDone(req: Request, res: Response) {
+    const id = req.params.id;
+    const isDone = req.body.isDone;
+
+    const result = toggleCardDone(id, isDone);
+
+    if (!result) {
+        res.sendStatus(404);
+        return;
+    }
+
+    res.status(200).json(result);
 }
