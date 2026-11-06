@@ -5,6 +5,7 @@ import styles from "./BoardColumn.module.css";
 
 type Props = {
   cards: Card[];
+  onToggleDone?: (id: string, isDone: boolean) => void;
   onDelete?: (id: string, title: string) => void;
 };
 
@@ -25,6 +26,7 @@ export function BoardColumn(props: Props) {
             id={card.id}
             title={card.title}
             isDone={card.isDone}
+            onToggleDone={props.onToggleDone}
             onDelete={props.onDelete}
           />
         ))}

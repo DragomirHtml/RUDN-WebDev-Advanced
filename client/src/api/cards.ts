@@ -22,3 +22,13 @@ export async function deleteCard(id: string): Promise<void> {
   });
   if (!response.ok) throw new Error("Не удалось удалить карточку");
 }
+
+export async function toggleCardDone(id: string, isDone: boolean): Promise<Card> {
+  const response = await fetch(`/api/cards/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ isDone }),
+  });
+  if (!response.ok) throw new Error("Не удалось обновить статус карточки");
+  return response.json();
+}
